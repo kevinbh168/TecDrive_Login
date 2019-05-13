@@ -1,6 +1,7 @@
 package com.brena.tecdrive_login;
 
 import android.content.ClipData;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -20,7 +21,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,7 +36,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.brena.tecdrive_login.R;
 import com.brena.tecdrive_login.utils.Tools;
+import com.mikhaellopez.circularimageview.CircularImageView;
 
+import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 
@@ -41,13 +46,11 @@ public class Main2Activity extends AppCompatActivity {
 
     GoogleSignInClient mGoogleSignInClient;
     private MenuView.ItemView sign_Out;
-    private TextView fullName;
+    private TextView fullNameText;
     private TextView email;
     private ImageView photoProfile;
 
-
     //MATERIAL X
-
     private ActionBar actionBar;
     private Toolbar toolbar;
     private Menu menu_navigation;
@@ -56,50 +59,41 @@ public class Main2Activity extends AppCompatActivity {
     private boolean is_account_mode = false;
 
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
 
-        //capturas de los componentes
-
+        //capturas de los componentes en la navegacion lateral
         NavigationView navigationView = findViewById(R.id.nav_view);
         View headerView = navigationView.getHeaderView(0);
-        fullName = headerView.findViewById(R.id.fullname);
+        fullNameText = headerView.findViewById(R.id.fullNameText);
         email = headerView.findViewById(R.id.email);
         photoProfile = headerView.findViewById(R.id.avatar_user);
         sign_Out = headerView.findViewById(R.id.nav_sign_out);
 
 
         //Codigo de Google
-
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
-
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-
         GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(Main2Activity.this);
         if (acct != null) {
-
             String personEmail = acct.getEmail();
             String personGivenName = acct.getGivenName();
             String personFamilyName = acct.getFamilyName();
             Uri personPhoto = acct.getPhotoUrl();
             String firstWord = personGivenName.replaceAll(" .*", "");
-            String personName = firstWord + " " + personFamilyName;
+            String fullName = firstWord + " " + personFamilyName;
 
-            fullName.setText(personName);
+            fullNameText.setText(fullName);
             email.setText(personEmail);
             Glide.with(this).load(personPhoto).into(photoProfile);
-            Log.d("1", personGivenName);
-            Log.d("2", personFamilyName);
         }
 
         initToolbar();
-        initNavigationMenu();
+        initNavigationMenu(acct);
     }
 
     private void signOut() {
@@ -117,7 +111,6 @@ public class Main2Activity extends AppCompatActivity {
 
     }
 
-
     //CLASES MATERIAL X
 
     private void initToolbar() {
@@ -128,10 +121,9 @@ public class Main2Activity extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeButtonEnabled(true);
         actionBar.setTitle("TecDrive");
-
     }
 
-    private void initNavigationMenu() {
+    private void initNavigationMenu(final GoogleSignInAccount acct) {
         final NavigationView nav_view = (NavigationView) findViewById(R.id.nav_view);
         final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
@@ -144,31 +136,37 @@ public class Main2Activity extends AppCompatActivity {
         nav_view.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(final MenuItem item) {
-                FragmentManager fragmentManager=getSupportFragmentManager();
+                FragmentManager fragmentManager = getSupportFragmentManager();
 
 
-                switch (item.getItemId()){
-                    case R.id.nav_home:{
-                        //fragmentManager.beginTransaction().replace(R.id.drawer_content,new ProfileFragment()).commit();
-                        Toast.makeText(getApplicationContext(), item.getTitle() + " Selected", Toast.LENGTH_SHORT).show();
+                switch (item.getItemId()) {
+                    case R.id.nav_home: {
+                        fragmentManager.beginTransaction().replace(R.id.drawer_content,new HomeFragment()).commit();
+                        //Toast.makeText(getApplicationContext(), item.getTitle() + " Selected", Toast.LENGTH_SHORT).show();
                         actionBar.setTitle(item.getTitle());
                         drawer.closeDrawers();
+                        break;
                     }
-                    case R.id.nav_profile:{
-                        fragmentManager.beginTransaction().replace(R.id.drawer_content, new ProfileFragment()).commit();
+                    case R.id.nav_profile: {
+                        //fragmentManager.beginTransaction().replace(R.id.drawer_content, new PerfilFragment()).commit();
+
+                        Log.d("nav_profile",acct.getDisplayName());
+                        PerfilFragment profileFragment=new PerfilFragment();
+                        profileFragment.PerfilFragment(acct);
+                        fragmentManager.beginTransaction().replace(R.id.drawer_content,profileFragment).commit();
+                       // fragmentManager.beginTransaction().replace(Contenedor de fragment,fragmento puede ser new como el que ya se esta usando).commit();
+
+
                         actionBar.setTitle(item.getTitle());
                         drawer.closeDrawers();
+                        break;
+                    }
+                    case R.id.nav_sign_out: {
+                        drawer.closeDrawers();
+                        Toast.makeText(getApplicationContext(), "Cerrando Sesion", Toast.LENGTH_SHORT).show();
+                        signOut();
                     }
                 }
-                /*if (item.getItemId() != R.id.nav_sign_out) {
-                    Toast.makeText(getApplicationContext(), item.getTitle() + " Selected", Toast.LENGTH_SHORT).show();
-                    actionBar.setTitle(item.getTitle());
-                    drawer.closeDrawers();
-                    return true;
-                } else {
-                    signOut();
-                }*/
-
                 return true;
             }
         });

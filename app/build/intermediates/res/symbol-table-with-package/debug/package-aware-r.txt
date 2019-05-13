@@ -1563,6 +1563,7 @@ drawable ic_arrow_back
 drawable ic_baseline_access_time_24px
 drawable ic_cancel_grey_24dp
 drawable ic_cancel_white_24dp
+drawable ic_comment
 drawable ic_help
 drawable ic_home
 drawable ic_launcher_background
@@ -1661,7 +1662,6 @@ id chronometer
 id clip_horizontal
 id clip_vertical
 id collapseActionView
-id collapsing_toolbar
 id column
 id column_reverse
 id container
@@ -1701,7 +1701,8 @@ id fixed
 id flex_end
 id flex_start
 id forever
-id fullname
+id fragmentProfile
+id fullNameText
 id ghost_view
 id glide_custom_view_target_tag
 id gone
@@ -1716,7 +1717,6 @@ id icon_group
 id icon_only
 id ifRoom
 id image
-id imageFondo
 id image_1
 id image_2
 id image_3
@@ -1777,6 +1777,7 @@ id mtrl_child_content_container
 id mtrl_internal_children_alpha_tag
 id multiply
 id name
+id namePostText
 id nav_favorite
 id nav_home
 id nav_profile
@@ -1786,6 +1787,7 @@ id nav_view
 id navigation_header_container
 id nested_content
 id never
+id nombreText
 id none
 id normal
 id notification_background
@@ -1800,6 +1802,10 @@ id parentPanel
 id parent_matrix
 id percent
 id pin
+id pointsText
+id postslist
+id profileImage
+id profilePostImage
 id progress_circular
 id progress_horizontal
 id radio
@@ -1863,7 +1869,6 @@ id text2
 id textSpacerNoButtons
 id textSpacerNoTitle
 id textStart
-id textView11
 id textView12
 id text_input_password_toggle
 id textinput_counter
@@ -1960,10 +1965,12 @@ layout design_navigation_menu
 layout design_navigation_menu_item
 layout design_text_input_password_icon
 layout detailed_chip_view
-layout fragment_profile
+layout fragment_home
+layout fragment_perfil
 layout include_drawer_content
 layout include_drawer_header_news
 layout item_list_filterable
+layout item_posts
 layout list_filterable_view
 layout mdtp_date_picker_dialog
 layout mdtp_date_picker_dialog_v2
@@ -2108,6 +2115,8 @@ string mdtp_time
 string mdtp_time_placeholder
 string mdtp_time_separator
 string mdtp_year_picker_description
+string medium_lorem_ipsum
+string middle_lorem_ipsum
 string mtrl_chip_close_icon_content_description
 string navigation_drawer_close
 string navigation_drawer_open
